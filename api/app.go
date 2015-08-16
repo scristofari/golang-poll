@@ -20,14 +20,14 @@ var (
 
 func Bootstrap() {
 	// Handle routes
-	http.Handle("/", handlers())
+	http.Handle("/", Handlers())
 
 	// SERVE
 	log.Printf("Server up on port '%s'", port)
 	log.Fatal(http.ListenAndServe(":"+port, nil))
 }
 
-func handlers() *mux.Router {
+func Handlers() *mux.Router {
 
 	// ROUTING
 	r := mux.NewRouter()
@@ -124,7 +124,7 @@ func postHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	w.WriteHeader(http.StatusOK)
+	w.WriteHeader(http.StatusCreated)
 	enc := json.NewEncoder(w)
 	enc.Encode(p)
 }
