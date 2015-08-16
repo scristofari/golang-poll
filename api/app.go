@@ -46,7 +46,7 @@ func handlers() *mux.Router {
 
 type ResultList struct {
 	Total int    `json:"total"`
-	Polls []Poll `json:"polls"`
+	Polls []Poll `json:"poll"`
 }
 
 func listHandler(w http.ResponseWriter, r *http.Request) {
@@ -81,9 +81,7 @@ func getHandler(w http.ResponseWriter, r *http.Request) {
 
 	p := new(Poll)
 	db := context.Get(r, "db").(*mgo.Database)
-	err := db.C("poll").FindId(bson.ObjectIdHex(id)).One(&p)
-
-	if err != nil {
+	if err := db.C("poll").FindId(bson.ObjectIdHex(id)).One(&p); err != nil {
 		if err == mgo.ErrNotFound {
 			http.Error(w, errNotFound.Error(), http.StatusNotFound)
 		} else {
@@ -103,15 +101,13 @@ func postHandler(w http.ResponseWriter, r *http.Request) {
 
 	decoder := json.NewDecoder(r.Body)
 	defer r.Body.Close()
-	errDecode := decoder.Decode(&p)
-	if errDecode != nil {
-		http.Error(w, errDecode.Error(), http.StatusBadRequest)
+	if err := decoder.Decode(&p); err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
 
-	errValidation := p.IsValid()
-	if errValidation != nil {
-		http.Error(w, errValidation.Error(), http.StatusBadRequest)
+	if err := p.IsValid(); err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
 
@@ -119,12 +115,11 @@ func postHandler(w http.ResponseWriter, r *http.Request) {
 	p.Updated = time.Now()
 
 	db := context.Get(r, "db").(*mgo.Database)
-	errInsert := db.C("poll").Insert(p)
-	if errInsert != nil {
-		if errInsert == mgo.ErrNotFound {
+	if err := db.C("poll").Insert(p); err != nil {
+		if err == mgo.ErrNotFound {
 			http.Error(w, errNotFound.Error(), http.StatusNotFound)
 		} else {
-			http.Error(w, errInsert.Error(), http.StatusInternalServerError)
+			http.Error(w, err.Error(), http.StatusInternalServerError)
 		}
 		return
 	}
@@ -146,8 +141,7 @@ func putHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	p := new(Poll)
-	err := db.C("poll").FindId(bson.ObjectIdHex(id)).One(&p)
-	if err != nil {
+	if err := db.C("poll").FindId(bson.ObjectIdHex(id)).One(&p); err != nil {
 		if err == mgo.ErrNotFound {
 			http.Error(w, errNotFound.Error(), http.StatusNotFound)
 		} else {
@@ -158,15 +152,13 @@ func putHandler(w http.ResponseWriter, r *http.Request) {
 
 	decoder := json.NewDecoder(r.Body)
 	defer r.Body.Close()
-	errDecode := decoder.Decode(&p)
-	if errDecode != nil {
-		http.Error(w, errDecode.Error(), http.StatusBadRequest)
+	if err := decoder.Decode(&p); err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
 
-	errValidation := p.IsValid()
-	if errValidation != nil {
-		http.Error(w, errValidation.Error(), http.StatusBadRequest)
+	if err := p.IsValid(); err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
 
@@ -174,12 +166,11 @@ func putHandler(w http.ResponseWriter, r *http.Request) {
 
 	bid := bson.ObjectIdHex(id)
 	p.Id = bid
-	errUpdate := db.C("poll").UpdateId(bid, p)
-	if errUpdate != nil {
-		if errUpdate == mgo.ErrNotFound {
+	if err := db.C("poll").UpdateId(bid, p); err != nil {
+		if err == mgo.ErrNotFound {
 			http.Error(w, errNotFound.Error(), http.StatusNotFound)
 		} else {
-			http.Error(w, errUpdate.Error(), http.StatusInternalServerError)
+			http.Error(w, err.Error(), http.StatusInternalServerError)
 		}
 		return
 	}
@@ -199,9 +190,7 @@ func deleteHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	db := context.Get(r, "db").(*mgo.Database)
-
-	err := db.C("poll").RemoveId(bson.ObjectIdHex(id))
-	if err != nil {
+	if err := db.C("poll").RemoveId(bson.ObjectIdHex(id)); err != nil {
 		if err == mgo.ErrNotFound {
 			http.Error(w, errNotFound.Error(), http.StatusNotFound)
 		} else {
