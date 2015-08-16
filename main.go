@@ -9,6 +9,6 @@ func main() {
 	// Max cpu
 	runtime.GOMAXPROCS(runtime.NumCPU())
 
-	// bottstrap
+	// bootstrap
 	api.Bootstrap()
 }
