@@ -18,17 +18,16 @@ func init() {
 	}
 	s.SetMode(mgo.Monotonic, true)
 
-	c := s.DB(database).C("poll")
-
 	// @travis mongodb not have text search enabled
 	/*
-		index := mgo.Index{
-			Key: []string{"$text:name"},
-		}
+		c := s.DB(database).C("poll")
+			index := mgo.Index{
+				Key: []string{"$text:name"},
+			}
 
-		err := c.EnsureIndex(index)
-		if err != nil {
-			panic(err)
-		}
+			err := c.EnsureIndex(index)
+			if err != nil {
+				panic(err)
+			}
 	*/
 }
