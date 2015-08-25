@@ -1,8 +1,9 @@
 package main
 
 import (
-	"golang-poll/api"
 	"runtime"
+
+	"github.com/sparck/golang-poll/api"
 )
 
 func main() {

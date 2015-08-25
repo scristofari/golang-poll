@@ -3,10 +3,11 @@ package test
 import (
 	"encoding/json"
 	"fmt"
-	"golang-poll/api"
 	"net/http"
 	"net/http/httptest"
 	"testing"
+
+	"github.com/sparck/golang-poll/api"
 
 	"github.com/stretchr/testify/assert"
 )
