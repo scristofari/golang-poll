@@ -7,4 +7,4 @@ services:
   - mongodb
 
 script: 
-  - go test test/api_test.go
+  - go test -v ./api/
