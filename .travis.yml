@@ -1,0 +1,10 @@
+language: go
+
+go:
+  - 1.5
+  - tip
+
+services:
+  - mongodb
+
+script: go test test/api_test.go
