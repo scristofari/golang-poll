@@ -7,8 +7,8 @@ import (
 var (
 	s        *mgo.Session
 	err      error
-	host     string = "localhost"
-	database string = "poll"
+	host     string = "127.0.0.1"
+	database string = "sparck-poll"
 )
 
 func init() {

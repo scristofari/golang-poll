@@ -1,4 +1,4 @@
-package test
+package api
 
 import (
 	"encoding/json"
@@ -6,8 +6,6 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"testing"
-
-	"github.com/sparck/golang-poll/api"
 
 	"github.com/stretchr/testify/assert"
 )
@@ -18,7 +16,7 @@ var (
 )
 
 func init() {
-	server = httptest.NewServer(api.Handlers())
+	server = httptest.NewServer(Handlers())
 	pollsUrl = fmt.Sprintf("%s/api/v1/polls", server.URL)
 }
 
@@ -35,7 +33,7 @@ func TestListPolls(t *testing.T) {
 
 	dec := json.NewDecoder(res.Body)
 	defer res.Body.Close()
-	result := new(api.ResultList)
+	result := new(ResultList)
 	assert.Nil(dec.Decode(&result), "The response must be of type json")
-	assert.IsType(&api.ResultList{}, result, "Must be a struct of type ResultList")
+	assert.IsType(&ResultList{}, result, "Must be a struct of type ResultList")
 }
