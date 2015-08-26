@@ -1,6 +1,8 @@
 package api
 
 import (
+	"os"
+
 	"gopkg.in/mgo.v2"
 )
 
@@ -19,15 +21,15 @@ func init() {
 	s.SetMode(mgo.Monotonic, true)
 
 	// @travis mongodb not have text search enabled
-	/*
+	if os.Getenv("SPARCK_ENV") != "travis" {
 		c := s.DB(database).C("poll")
-			index := mgo.Index{
-				Key: []string{"$text:name"},
-			}
+		index := mgo.Index{
+			Key: []string{"$text:name"},
+		}
 
-			err := c.EnsureIndex(index)
-			if err != nil {
-				panic(err)
-			}
-	*/
+		err := c.EnsureIndex(index)
+		if err != nil {
+			panic(err)
+		}
+	}
 }

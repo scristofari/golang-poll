@@ -3,6 +3,8 @@ language: go
 go:
   - tip
 
+env:
+	- SPARCK_ENV=travis
 services:
   - mongodb
 
