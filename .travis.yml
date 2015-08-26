@@ -4,7 +4,8 @@ go:
   - tip
 
 env:
-	- SPARCK_ENV=travis
+  - SPARCK_ENV=travis
+
 services:
   - mongodb
 
