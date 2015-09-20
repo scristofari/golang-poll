@@ -1,7 +1,6 @@
 package api
 
 import (
-	"log"
 	"os"
 
 	"gopkg.in/mgo.v2"
@@ -14,9 +13,7 @@ var (
 )
 
 func init() {
-	host := os.Getenv("GOLANGPOLL_DB_1_PORT_27017_TCP_ADDR")
-	log.Print("Host : " + host)
-	s, err = mgo.Dial(host)
+	s, err = mgo.Dial(os.Getenv("GOLANGPOLL_DB_1_PORT_27017_TCP_ADDR"))
 	if err != nil {
 		panic(err)
 	}

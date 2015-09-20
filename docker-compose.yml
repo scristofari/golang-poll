@@ -1,9 +1,10 @@
 app:
   build: .
+  command: go run main.go
   ports:
   - "9001:9001"
   volumes:
-  - .:/
+  - .:/code
   links:
   - db
 db:
