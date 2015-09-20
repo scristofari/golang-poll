@@ -1,0 +1,10 @@
+app:
+  build: .
+  ports:
+   - "9001:9001"
+  volumes:
+   - .:/go
+  links:
+   - mongo
+mongo:
+  image: mongo:latest

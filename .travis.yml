@@ -1,13 +1,9 @@
 language: go
-
 go:
-  - tip
-
+	- tip
 env:
-  - SPARCK_ENV=travis
-
+	- SPARCK_ENV=travis
 services:
-  - mongodb
-
-script: 
-  - go test -v ./api/
+	- mongodb
+script:
+	- go test -v ./api/

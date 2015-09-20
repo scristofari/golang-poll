@@ -1,6 +1,7 @@
 package api
 
 import (
+	"log"
 	"os"
 
 	"gopkg.in/mgo.v2"
@@ -9,11 +10,12 @@ import (
 var (
 	s        *mgo.Session
 	err      error
-	host     string = "127.0.0.1"
 	database string = "sparck-poll"
 )
 
 func init() {
+	host := os.Getenv("MONGO_PORT_27017_TCP_ADDR")
+	log.Print(host)
 	s, err = mgo.Dial(host)
 	if err != nil {
 		panic(err)
@@ -21,15 +23,16 @@ func init() {
 	s.SetMode(mgo.Monotonic, true)
 
 	// @travis mongodb not have text search enabled
-	if os.Getenv("SPARCK_ENV") != "travis" {
-		c := s.DB(database).C("poll")
-		index := mgo.Index{
-			Key: []string{"$text:name"},
-		}
+	/*
+		if os.Getenv("SPARCK_ENV") != "travis" {
+			c := s.DB(database).C("poll")
+			index := mgo.Index{
+				Key: []string{"$text:name"},
+			}
 
-		err := c.EnsureIndex(index)
-		if err != nil {
-			panic(err)
-		}
-	}
+			err := c.EnsureIndex(index)
+			if err != nil {
+				panic(err)
+			}
+		}*/
 }
