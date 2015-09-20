@@ -3,7 +3,7 @@ app:
   ports:
    - "9001:9001"
   volumes:
-   - .:/go
+   - .:/
   links:
    - mongo
 mongo:
