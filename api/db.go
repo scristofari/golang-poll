@@ -14,7 +14,7 @@ var (
 )
 
 func init() {
-	host := os.Getenv("MONGO_PORT_27017_TCP_ADDR")
+	host := os.Getenv("GOLANGPOLL_DB_1_PORT_27017_TCP_ADDR")
 	log.Print("Host : " + host)
 	s, err = mgo.Dial(host)
 	if err != nil {
