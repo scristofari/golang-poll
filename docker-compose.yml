@@ -1,8 +1,9 @@
 app:
   build: .
-  command: go run main.go
+  command: gin -a "9001" -p "9002"
   ports:
   - "9001:9001"
+  - "9002:9002"
   volumes:
   - .:/code
   links:
