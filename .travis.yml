@@ -2,8 +2,9 @@ language: go
 go:
   - tip
 env:
-  - GOLANGPOLL_DB_1_PORT_27017_TCP_ADDR=127.0.0.1
-  - SPARCK_ENV=travis
+  global:
+    - GOLANGPOLL_DB_1_PORT_27017_TCP_ADDR=127.0.0.1
+    - SPARCK_ENV=travis
 services:
   - mongodb
 script:
