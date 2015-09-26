@@ -5,8 +5,11 @@ app:
   - "9001:9001"
   - "9002:9002"
   volumes:
-  - .:/code
+  - .:/go/src/github.com/golang/sparck/golang-poll
   links:
   - db
+  - redis
 db:
   image: mongo:latest
+redis:
+  image: redis:latest
