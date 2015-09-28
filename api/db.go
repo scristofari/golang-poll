@@ -13,7 +13,7 @@ var (
 )
 
 func init() {
-	s, err = mgo.Dial(os.Getenv("GOLANGPOLL_DB_1_PORT_27017_TCP_ADDR"))
+	s, err = mgo.Dial(os.Getenv("GOLANGPOLL_MONGO_1_PORT_27017_TCP_ADDR"))
 	if err != nil {
 		panic(err)
 	}
