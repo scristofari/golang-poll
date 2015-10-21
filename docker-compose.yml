@@ -1,15 +1,11 @@
 app:
   build: .
-  command: gin -a "9001" -p "9002"
+  command: go run main.go
   ports:
   - "9001:9001"
-  - "9002:9002"
   volumes:
   - .:/go/src/github.com/golang/sparck/golang-poll
   links:
   - mongo
-  - redis
 mongo:
   image: mongo:latest
-redis:
-  image: redis:latest
