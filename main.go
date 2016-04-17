@@ -3,7 +3,7 @@ package main
 import (
 	"runtime"
 
-	"github.com/sparck/golang-poll/api"
+	"github.com/scristofari/golang-poll/api"
 )
 
 func main() {

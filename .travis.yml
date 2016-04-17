@@ -3,8 +3,8 @@ go:
   - tip
 env:
   global:
-    - GOLANGPOLL_MONGO_1_PORT_27017_TCP_ADDR=127.0.0.1
-    - SPARCK_ENV=travis
+    - APP_ENV=travis
+    - APP_HOST=127.0.0.1
 services:
   - mongodb
 script:

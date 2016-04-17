@@ -1,93 +1,72 @@
 package api
 
 import (
+	"encoding/json"
 	"net/http"
-	"strconv"
-	"time"
+	"reflect"
 
+	"gopkg.in/go-playground/validator.v8"
 	"gopkg.in/mgo.v2/bson"
+
+	"github.com/gorilla/schema"
+	"github.com/leebenson/conform"
 )
 
-type HttpQuery struct {
-	Query  map[string]interface{}
-	Offset int
-	Limit  int
-	Sort   string
-}
-
-const (
-	offset int    = 0
-	limit  int    = 15
-	sort   string = "-updated"
+var (
+	validate *validator.Validate
 )
 
-func NewQuery() *HttpQuery {
-	query := new(HttpQuery)
-	query.Limit = limit
-	query.Offset = offset
-	query.Sort = sort
-
-	return query
+func init() {
+	config := &validator.Config{TagName: "validate"}
+	validate = validator.New(config)
+	// custom validation
+	validate.RegisterValidation("bson", bsonValidator)
 }
 
-func (qc *HttpQuery) ParseQuery(r *http.Request) {
-	q := r.URL.Query()
+// Is the ID is a valid bson hex ?
+func bsonValidator(v *validator.Validate, topStruct reflect.Value, currentStructOrField reflect.Value, field reflect.Value, fieldType reflect.Type, fieldKind reflect.Kind, param string) bool {
+	return bson.IsObjectIdHex(field.String())
+}
 
-	query := make(map[string]interface{})
+func valid(obj interface{}) error {
+	return validate.Struct(obj)
+}
 
-	for key := range q {
-		value := q.Get(key)
-		if key == "q" && value != "" {
-			query["$text"] = bson.M{"$search": value}
-			continue
-		}
-		if key == "sinceid" && value != "" {
-			query["_id"] = bson.M{"$gt": bson.ObjectIdHex(value)}
-			continue
-		}
-		if key == "since" && value != "" {
-			i, err := strconv.ParseInt(value, 10, 64)
-			if err != nil {
-				continue
-			}
-			tm := time.Unix(i, 0)
-			query["updated"] = bson.M{"$gte": tm}
-			continue
-		}
-		if value != "" {
-			vint, err := strconv.Atoi(value)
-			if err == nil {
-				query[key] = vint
-			} else {
-				query[key] = value
-			}
+func sanitize(obj interface{}) error {
+	return conform.Strings(obj)
+}
 
-		}
+func BindJson(r *http.Request, obj interface{}) error {
+	decoder := json.NewDecoder(r.Body)
+	defer r.Body.Close()
+
+	if err := decoder.Decode(obj); err != nil {
+		return err
 	}
-	delete(query, "limit")
-	delete(query, "offset")
-	delete(query, "sort")
+	return nil
+}
 
-	qc.Query = query
-	o := q.Get("offset")
-	if o != "" {
-		qc.Offset, _ = strconv.Atoi(o)
-	}
+func WriteJson(w http.ResponseWriter, obj interface{}, status int) {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(status)
+	enc := json.NewEncoder(w)
+	enc.Encode(obj)
+}
 
-	l := q.Get("limit")
-	if l != "" {
-		v, _ := strconv.Atoi(l)
-		if v > 100 {
-			qc.Limit = 100
-		} else {
-			qc.Limit = v
-		}
-	} else {
-		qc.Limit = 20
+func IsValid(obj interface{}) error {
+	if err := sanitize(obj); err != nil {
+		return err
 	}
+	if err := valid(obj); err != nil {
+		return err
+	}
+	return nil
+}
 
-	s := q.Get("sort")
-	if s != "" {
-		qc.Sort = s
+func BindForm(r *http.Request, obj interface{}) error {
+	if err := r.ParseForm(); err != nil {
+		return err
 	}
+	decoder := schema.NewDecoder()
+	return decoder.Decode(obj, r.Form)
 }
