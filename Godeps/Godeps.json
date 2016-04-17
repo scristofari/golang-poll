@@ -1,0 +1,37 @@
+{
+	"ImportPath": "github.com/scristofari/golang-poll",
+	"GoVersion": "go1.6",
+	"Deps": [
+		{
+			"ImportPath": "github.com/etgryphon/stringUp",
+			"Rev": "31534ccd8cac1d3d205c906ea5722928b045ed8c"
+		},
+		{
+			"ImportPath": "github.com/gorilla/context",
+			"Rev": "1ea25387ff6f684839d82767c1733ff4d4d15d0a"
+		},
+		{
+			"ImportPath": "github.com/gorilla/mux",
+			"Comment": "v1.1",
+			"Rev": "0eeaf8392f5b04950925b8a69fe70f110fa7cbfc"
+		},
+		{
+			"ImportPath": "github.com/gorilla/schema",
+			"Rev": "ddf016c1034e9cfd3eb5b276f626c8f04d765f6f"
+		},
+		{
+			"ImportPath": "github.com/leebenson/conform",
+			"Rev": "9afe87a88d0ad0e70ab19f87929e3012946a19b5"
+		},
+		{
+			"ImportPath": "gopkg.in/go-playground/validator.v8",
+			"Comment": "v8.17.1",
+			"Rev": "014792cf3e266caff1e916876be12282b33059e0"
+		},
+		{
+			"ImportPath": "gopkg.in/mgo.v2",
+			"Comment": "r2016.02.04-1-gb6e2fa3",
+			"Rev": "b6e2fa371e64216a45e61072a96d4e3859f169da"
+		}
+	]
+}
