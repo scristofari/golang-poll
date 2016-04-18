@@ -9,7 +9,7 @@ import (
 )
 
 //  Log all request
-//
+//  Apache access_log format
 func LogHandler(f http.HandlerFunc) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		nw := &LogResponseWriter{
