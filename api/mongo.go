@@ -36,22 +36,19 @@ func init() {
 }
 
 func ListPolls(db *mgo.Database, qf *QueryFilter) ([]Poll, error) {
-	var polls []Poll
-
+	// Empty VS Nil slice
+	polls := []Poll{}
 	if err := db.C(collection).Find(nil).Skip(qf.Offset).Limit(qf.Limit).Sort(qf.Sort).All(&polls); err != nil {
 		return nil, err
 	}
-
 	return polls, nil
 }
 
 func GetPoll(db *mgo.Database, id string) (*Poll, error) {
 	p := new(Poll)
-
 	if err := db.C(collection).FindId(bson.ObjectIdHex(id)).One(&p); err != nil {
 		return nil, err
 	}
-
 	return p, nil
 }
 

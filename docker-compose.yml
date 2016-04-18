@@ -2,7 +2,7 @@ app:
   build: .
   command: go run main.go
   ports:
-  - "9001:9001"
+  - "80:8080"
   volumes:
   - .:/go/src/github.com/golang/sparck/golang-poll
   links:

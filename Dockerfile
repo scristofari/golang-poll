@@ -6,4 +6,4 @@ ADD . /go/src/github.com/golang/sparck/golang-poll
 WORKDIR /go/src/github.com/golang/sparck/golang-poll
 RUN godep get
 
-EXPOSE 9001
+EXPOSE 80

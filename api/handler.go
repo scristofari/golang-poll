@@ -12,21 +12,34 @@ import (
 )
 
 var (
+	// Custom error for document not found : mgo.ErrNotFound
 	errNotFound = errors.New("Document 'Poll' not found !")
 )
 
+// Will permit to filter polls by :
+// - limit
+// - offset
+// - sort
 type QueryFilter struct {
 	Sort   string `schema:"sort"`
 	Limit  int    `schema:"limit"`
 	Offset int    `schema:"offset"`
 }
 
-func (qf QueryFilter) SetDefault() {
+// Set default values for the query filter
+// Gorilla schema will override filters if they are set in the query of the url
+func (qf *QueryFilter) SetDefault() {
 	qf.Limit = 10
 	qf.Offset = 0
 	qf.Sort = "updated_at"
 }
 
+// List all the polls
+// Workflow :
+// - Get the filters for the list
+// - Get the db session thanks to the context
+// - List polls
+// - Render the result in json format
 func listHandler(w http.ResponseWriter, r *http.Request) {
 	db := context.Get(r, "db").(*mgo.Database)
 
@@ -127,7 +140,6 @@ func deleteHandler(w http.ResponseWriter, r *http.Request) {
 
 	vars := mux.Vars(r)
 	id := vars["id"]
-
 	if !bson.IsObjectIdHex(id) {
 		http.Error(w, errNotFound.Error(), http.StatusNotFound)
 		return
