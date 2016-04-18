@@ -1,7 +1,6 @@
 package api
 
 import (
-	"encoding/json"
 	"fmt"
 	"net/http"
 	"net/http/httptest"
@@ -30,10 +29,4 @@ func TestListPolls(t *testing.T) {
 	assert := assert.New(t)
 	assert.Equal(res.StatusCode, http.StatusOK, "Bad request status !")
 	assert.NotEmpty(res.Body, "Must return a response !")
-
-	dec := json.NewDecoder(res.Body)
-	defer res.Body.Close()
-	result := new(ResultList)
-	assert.Nil(dec.Decode(&result), "The response must be of type json")
-	assert.IsType(&ResultList{}, result, "Must be a struct of type ResultList")
 }

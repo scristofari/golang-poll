@@ -8,19 +8,21 @@ import (
 	"github.com/gorilla/mux"
 )
 
+// Bootstrap the api
 func Bootstrap() {
 	port := os.Getenv("APP_PORT")
 
 	// Handle routes
 	http.Handle("/", Handlers())
-	// SERVE
+
+	// serve
 	log.Printf("Server up on port '%s'", port)
 	log.Fatal(http.ListenAndServe(":"+port, nil))
 }
 
+// Use gorilla mux
+// CRUD + Vote Handlers
 func Handlers() *mux.Router {
-
-	// ROUTING
 	r := mux.NewRouter().StrictSlash(true)
 
 	r.HandleFunc("/api/v1/polls", MiddlewareHandler(listHandler)).Methods("GET")

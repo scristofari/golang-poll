@@ -7,7 +7,7 @@ import (
 )
 
 func main() {
-	// Max cpu
+	// Max goroutine
 	runtime.GOMAXPROCS(runtime.NumCPU())
 
 	// Bootstrap

@@ -60,11 +60,21 @@ func listHandler(w http.ResponseWriter, r *http.Request) {
 	WriteJson(w, polls, http.StatusOK)
 }
 
+// Get one poll
+// Workflow :
+// - Get the id from the router and validate it
+// - Get the db session thanks to the context
+// - Get poll
+// - Render the result in json format
 func getHandler(w http.ResponseWriter, r *http.Request) {
 	db := context.Get(r, "db").(*mgo.Database)
 
 	vars := mux.Vars(r)
 	id := vars["id"]
+	if !bson.IsObjectIdHex(id) {
+		http.Error(w, errNotFound.Error(), http.StatusNotFound)
+		return
+	}
 
 	p, err := GetPoll(db, id)
 	if err == mgo.ErrNotFound {
@@ -76,6 +86,14 @@ func getHandler(w http.ResponseWriter, r *http.Request) {
 	WriteJson(w, p, http.StatusOK)
 }
 
+// Create one poll
+// Workflow :
+// - Genereate a new objectid
+// - Deserialize the body from json to struct
+// - Validate the struct
+// - Get the db session thanks to the context
+// - Insert the poll
+// - Render the result in json format
 func postHandler(w http.ResponseWriter, r *http.Request) {
 	db := context.Get(r, "db").(*mgo.Database)
 
@@ -106,6 +124,10 @@ func postHandler(w http.ResponseWriter, r *http.Request) {
 func putHandler(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	id := vars["id"]
+	if !bson.IsObjectIdHex(id) {
+		http.Error(w, errNotFound.Error(), http.StatusNotFound)
+		return
+	}
 
 	db := context.Get(r, "db").(*mgo.Database)
 
