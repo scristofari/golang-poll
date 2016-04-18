@@ -51,7 +51,8 @@ func listHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	polls, err := ListPolls(db, qf)
+	repo := new(Repository)
+	polls, err := repo.ListPolls(db, qf)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -70,17 +71,20 @@ func getHandler(w http.ResponseWriter, r *http.Request) {
 	db := context.Get(r, "db").(*mgo.Database)
 
 	vars := mux.Vars(r)
-	id := vars["id"]
+	id := vars["poll"]
 	if !bson.IsObjectIdHex(id) {
 		http.Error(w, errNotFound.Error(), http.StatusNotFound)
 		return
 	}
 
-	p, err := GetPoll(db, id)
+	repo := new(Repository)
+	p, err := repo.GetPoll(db, id)
 	if err == mgo.ErrNotFound {
 		http.Error(w, errNotFound.Error(), http.StatusNotFound)
-	} else {
+		return
+	} else if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
 	}
 
 	WriteJson(w, p, http.StatusOK)
@@ -113,7 +117,8 @@ func postHandler(w http.ResponseWriter, r *http.Request) {
 	p.CreatedAt = time.Now()
 	p.UpdatedAt = time.Now()
 
-	if err := InsertPoll(db, p); err != nil {
+	repo := new(Repository)
+	if err := repo.InsertPoll(db, p); err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
@@ -131,7 +136,7 @@ func postHandler(w http.ResponseWriter, r *http.Request) {
 // - Render the result in json format
 func putHandler(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
-	id := vars["id"]
+	id := vars["poll"]
 	if !bson.IsObjectIdHex(id) {
 		http.Error(w, errNotFound.Error(), http.StatusNotFound)
 		return
@@ -153,11 +158,14 @@ func putHandler(w http.ResponseWriter, r *http.Request) {
 	p.UpdatedAt = time.Now()
 
 	p.Id = bson.ObjectIdHex(id)
-	if err := UpdatePoll(db, p); err != nil {
+	repo := new(Repository)
+	if err := repo.UpdatePoll(db, p); err != nil {
 		if err == mgo.ErrNotFound {
 			http.Error(w, errNotFound.Error(), http.StatusNotFound)
+			return
 		} else {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
 		}
 		return
 	}
@@ -175,17 +183,52 @@ func deleteHandler(w http.ResponseWriter, r *http.Request) {
 	db := context.Get(r, "db").(*mgo.Database)
 
 	vars := mux.Vars(r)
-	id := vars["id"]
+	id := vars["poll"]
 	if !bson.IsObjectIdHex(id) {
 		http.Error(w, errNotFound.Error(), http.StatusNotFound)
 		return
 	}
 
-	if err := DeletePoll(db, id); err != nil {
+	repo := new(Repository)
+	if err := repo.DeletePoll(db, id); err != nil {
 		if err == mgo.ErrNotFound {
 			http.Error(w, errNotFound.Error(), http.StatusNotFound)
+			return
 		} else {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+		return
+	}
+	w.WriteHeader(http.StatusNoContent)
+}
+
+// Vote
+// Workflow :
+// - Get the ids (poll / answer) from the router and validate them
+// - Get the db session thanks to the context
+// - Vote for the poll
+// - Return a http status 204 No content
+func voteHandler(w http.ResponseWriter, r *http.Request) {
+	db := context.Get(r, "db").(*mgo.Database)
+
+	vars := mux.Vars(r)
+	poll := vars["poll"]
+	answer := vars["answer"]
+
+	if !bson.IsObjectIdHex(poll) {
+		http.Error(w, errNotFound.Error(), http.StatusNotFound)
+		return
+	}
+
+	repo := new(Repository)
+	if err := repo.VotePoll(db, poll, answer); err != nil {
+		if err == mgo.ErrNotFound {
+			http.Error(w, errNotFound.Error(), http.StatusNotFound)
+			return
+		} else {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
 		}
 		return
 	}

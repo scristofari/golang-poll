@@ -31,7 +31,7 @@ func Handlers() *mux.Router {
 	r.HandleFunc("/api/v1/polls", MiddlewareHandler(postHandler)).Methods("POST")
 	r.HandleFunc("/api/v1/polls/{poll}", MiddlewareHandler(putHandler)).Methods("PUT")
 	r.HandleFunc("/api/v1/polls/{poll}", MiddlewareHandler(deleteHandler)).Methods("DELETE")
-	r.HandleFunc("/api/v1/polls/{poll}/answers/{answer}", MiddlewareHandler(deleteHandler)).Methods("POST")
+	r.HandleFunc("/api/v1/polls/{poll}/answers/{answer}", MiddlewareHandler(voteHandler)).Methods("POST")
 
 	return r
 }
