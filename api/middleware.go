@@ -1,10 +1,25 @@
 package api
 
 import (
+	"fmt"
+	"log"
 	"net/http"
 
 	"github.com/gorilla/context"
 )
+
+//  Log all request
+//
+func LogHandler(f http.HandlerFunc) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		nw := &LogResponseWriter{
+			ResponseWriter: w,
+		}
+		f(nw, r)
+
+		log.Println(fmt.Sprintf("%s %s %s %d %d", r.Method, r.URL.String(), r.Proto, nw.Status(), nw.Size()))
+	}
+}
 
 // Get a new mongo session by request : "crash friendly".
 // Close the session after using it.
@@ -33,5 +48,5 @@ func CorsHandler(f http.HandlerFunc) http.HandlerFunc {
 
 // Map all sub middlewares
 func MiddlewareHandler(f http.HandlerFunc) http.HandlerFunc {
-	return DBHandler(CorsHandler(f))
+	return LogHandler(CorsHandler(DBHandler(f)))
 }
