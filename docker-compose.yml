@@ -4,7 +4,7 @@ app:
   ports:
   - "80:8080"
   volumes:
-  - .:/go/src/github.com/golang/sparck/golang-poll
+  - .:/go/src/github.com/golang/scristofari/golang-poll
   links:
   - mongo
 mongo:

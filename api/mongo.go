@@ -37,6 +37,9 @@ func init() {
 
 func ListPolls(db *mgo.Database, qf *QueryFilter) ([]Poll, error) {
 	// Empty VS Nil slice
+	// Empty => the json marshaler will print []
+	// Nil => the json marshaler will print null
+	// Empty is the good thing to do
 	polls := []Poll{}
 	if err := db.C(collection).Find(nil).Skip(qf.Offset).Limit(qf.Limit).Sort(qf.Sort).All(&polls); err != nil {
 		return nil, err

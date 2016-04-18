@@ -88,7 +88,7 @@ func getHandler(w http.ResponseWriter, r *http.Request) {
 
 // Create one poll
 // Workflow :
-// - Genereate a new objectid
+// - Generate a new objectId
 // - Deserialize the body from json to struct
 // - Validate the struct
 // - Get the db session thanks to the context
@@ -121,6 +121,14 @@ func postHandler(w http.ResponseWriter, r *http.Request) {
 	WriteJson(w, p, http.StatusCreated)
 }
 
+// Update one poll
+// Workflow :
+// - Get the id from the router and validate it
+// - Deserialize the body from json to struct
+// - Validate the struct
+// - Get the db session thanks to the context
+// - Update the poll
+// - Render the result in json format
 func putHandler(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	id := vars["id"]
@@ -157,6 +165,12 @@ func putHandler(w http.ResponseWriter, r *http.Request) {
 	WriteJson(w, p, http.StatusOK)
 }
 
+// Delete one poll
+// Workflow :
+// - Get the id from the router and validate it
+// - Get the db session thanks to the context
+// - Delete the poll
+// - Return a http status 204 No content
 func deleteHandler(w http.ResponseWriter, r *http.Request) {
 	db := context.Get(r, "db").(*mgo.Database)
 

@@ -9,6 +9,7 @@ import (
 )
 
 // Bootstrap the api
+// Serving / Routing
 func Bootstrap() {
 	port := os.Getenv("APP_PORT")
 
