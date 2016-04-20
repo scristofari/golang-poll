@@ -21,8 +21,8 @@ func Bootstrap() {
 	log.Fatal(http.ListenAndServe(":"+port, nil))
 }
 
-// Use gorilla mux
-// CRUD + Vote Handlers
+// Handlers : Use gorilla mux.
+// CRUD + Vote Handlers.
 func Handlers() *mux.Router {
 	r := mux.NewRouter().StrictSlash(true)
 

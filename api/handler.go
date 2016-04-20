@@ -28,10 +28,12 @@ type QueryFilter struct {
 
 // Set default values for the query filter.
 // Gorilla schema will override filters if they are set in the query of the url.
-func (qf *QueryFilter) SetDefault() {
+func NewQueryFilter() *QueryFilter {
+	qf := new(QueryFilter)
 	qf.Limit = 10
 	qf.Offset = 0
 	qf.Sort = "updated_at"
+	return qf
 }
 
 // List all the polls.
@@ -43,9 +45,7 @@ func (qf *QueryFilter) SetDefault() {
 func listHandler(w http.ResponseWriter, r *http.Request) {
 	db := context.Get(r, "db").(*mgo.Database)
 
-	qf := new(QueryFilter)
-	qf.SetDefault()
-
+	qf := NewQueryFilter()
 	if err := BindForm(r, qf); err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
@@ -58,7 +58,7 @@ func listHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	WriteJson(w, polls, http.StatusOK)
+	WriteJSON(w, polls, http.StatusOK)
 }
 
 // Get one poll.
@@ -87,7 +87,7 @@ func getHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	WriteJson(w, p, http.StatusOK)
+	WriteJSON(w, p, http.StatusOK)
 }
 
 // Create one poll.
@@ -102,9 +102,9 @@ func postHandler(w http.ResponseWriter, r *http.Request) {
 	db := context.Get(r, "db").(*mgo.Database)
 
 	p := new(Poll)
-	p.Id = bson.NewObjectId()
+	p.ID = bson.NewObjectId()
 
-	if err := BindJson(r, p); err != nil {
+	if err := BindJSON(r, p); err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
@@ -123,7 +123,7 @@ func postHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	WriteJson(w, p, http.StatusCreated)
+	WriteJSON(w, p, http.StatusCreated)
 }
 
 // Update one poll
@@ -145,7 +145,7 @@ func putHandler(w http.ResponseWriter, r *http.Request) {
 	db := context.Get(r, "db").(*mgo.Database)
 
 	p := new(Poll)
-	if err := BindJson(r, p); err != nil {
+	if err := BindJSON(r, p); err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
@@ -157,20 +157,18 @@ func putHandler(w http.ResponseWriter, r *http.Request) {
 
 	p.UpdatedAt = time.Now()
 
-	p.Id = bson.ObjectIdHex(id)
+	p.ID = bson.ObjectIdHex(id)
 	repo := new(Repository)
 	if err := repo.UpdatePoll(db, p); err != nil {
 		if err == mgo.ErrNotFound {
 			http.Error(w, errNotFound.Error(), http.StatusNotFound)
 			return
-		} else {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-			return
 		}
+		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
-	WriteJson(w, p, http.StatusOK)
+	WriteJSON(w, p, http.StatusOK)
 }
 
 // Delete one poll
@@ -194,10 +192,8 @@ func deleteHandler(w http.ResponseWriter, r *http.Request) {
 		if err == mgo.ErrNotFound {
 			http.Error(w, errNotFound.Error(), http.StatusNotFound)
 			return
-		} else {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-			return
 		}
+		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 	w.WriteHeader(http.StatusNoContent)
@@ -226,11 +222,10 @@ func voteHandler(w http.ResponseWriter, r *http.Request) {
 		if err == mgo.ErrNotFound {
 			http.Error(w, errNotFound.Error(), http.StatusNotFound)
 			return
-		} else {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-			return
 		}
+		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
+
 	}
 	w.WriteHeader(http.StatusNoContent)
 }

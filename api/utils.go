@@ -41,7 +41,7 @@ func sanitize(obj interface{}) error {
 }
 
 // Deserialize json to struct
-func BindJson(r *http.Request, obj interface{}) error {
+func BindJSON(r *http.Request, obj interface{}) error {
 	decoder := json.NewDecoder(r.Body)
 	defer r.Body.Close()
 
@@ -53,7 +53,7 @@ func BindJson(r *http.Request, obj interface{}) error {
 
 // Serialize struct to json
 // Write the correct status / content-type
-func WriteJson(w http.ResponseWriter, obj interface{}, status int) {
+func WriteJSON(w http.ResponseWriter, obj interface{}, status int) {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(status)
 	enc := json.NewEncoder(w)

@@ -10,8 +10,8 @@ import (
 var (
 	s          *mgo.Session
 	err        error
-	database   string = "poll"
-	collection string = "poll"
+	database   = "poll"
+	collection = "poll"
 )
 
 func init() {
@@ -63,18 +63,18 @@ func (r *Repository) InsertPoll(db *mgo.Database, p *Poll) error {
 }
 
 func (r *Repository) UpdatePoll(db *mgo.Database, p *Poll) error {
-	return db.C(collection).UpdateId(p.Id, p)
+	return db.C(collection).UpdateId(p.ID, p)
 }
 
 func (r *Repository) DeletePoll(db *mgo.Database, id string) error {
 	return db.C(collection).RemoveId(bson.ObjectIdHex(id))
 }
 
-func (r *Repository) VotePoll(db *mgo.Database, pollId string, answerId string) error {
+func (r *Repository) VotePoll(db *mgo.Database, pollID string, answerID string) error {
 	p := new(Poll)
-	key := "answers." + answerId + ".votes"
+	key := "answers." + answerID + ".votes"
 	change := mgo.Change{Update: bson.M{"$inc": bson.M{key: 1}}, ReturnNew: true}
 
-	_, err := db.C(collection).FindId(bson.ObjectIdHex(pollId)).Apply(change, &p)
+	_, err := db.C(collection).FindId(bson.ObjectIdHex(pollID)).Apply(change, &p)
 	return err
 }
