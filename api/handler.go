@@ -26,15 +26,15 @@ type QueryFilter struct {
 	Offset int    `schema:"offset"`
 }
 
-// Set default values for the query filter
-// Gorilla schema will override filters if they are set in the query of the url
+// Set default values for the query filter.
+// Gorilla schema will override filters if they are set in the query of the url.
 func (qf *QueryFilter) SetDefault() {
 	qf.Limit = 10
 	qf.Offset = 0
 	qf.Sort = "updated_at"
 }
 
-// List all the polls
+// List all the polls.
 // Workflow :
 // - Get the filters for the list
 // - Get the db session thanks to the context
@@ -61,7 +61,7 @@ func listHandler(w http.ResponseWriter, r *http.Request) {
 	WriteJson(w, polls, http.StatusOK)
 }
 
-// Get one poll
+// Get one poll.
 // Workflow :
 // - Get the id from the router and validate it
 // - Get the db session thanks to the context
@@ -90,7 +90,7 @@ func getHandler(w http.ResponseWriter, r *http.Request) {
 	WriteJson(w, p, http.StatusOK)
 }
 
-// Create one poll
+// Create one poll.
 // Workflow :
 // - Generate a new objectId
 // - Deserialize the body from json to struct

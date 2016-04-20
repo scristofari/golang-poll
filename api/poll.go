@@ -6,6 +6,11 @@ import (
 	"gopkg.in/mgo.v2/bson"
 )
 
+const (
+	STATUS_UNPUBLISHED = iota
+	STATUS_PUBLISHED
+)
+
 type Poll struct {
 	Id        bson.ObjectId `json:"id" bson:"_id"`
 	Name      string        `json:"name" bson:"name" validate:"required" conform:"name"`
@@ -13,7 +18,7 @@ type Poll struct {
 	Answers   []Answer      `json:"answers" bson:"answers"`
 	CreatedAt time.Time     `json:"created_at" bson:"created_at"`
 	UpdatedAt time.Time     `json:"updated_at" bson:"updated_at"`
-	Status    int           `json:"status" bson:"status"`
+	Status    int           `json:"status" bson:"status" validate:"lte=2"`
 }
 
 type Answer struct {
