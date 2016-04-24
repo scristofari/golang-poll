@@ -2,12 +2,10 @@ FROM golang:1.6-alpine
 
 RUN apk update && apk add bash git
 
-RUN go get github.com/tools/godep
-
 ADD . /go/src/github.com/golang/scristofari/golang-poll
-
 WORKDIR /go/src/github.com/golang/scristofari/golang-poll
 
+RUN go get github.com/tools/godep
 ENV GO15VENDOREXPERIMENT=0
 RUN godep get
 
