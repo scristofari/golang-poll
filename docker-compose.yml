@@ -1,11 +1,13 @@
-app:
+golang-poll-app:
   build: .
   command: go run main.go
   ports:
   - "80:8080"
+  environment: 
+  - APP_HOST="172.17.0.2" #GOLANG_POLL_MONGO_PORT_27017_TCP_ADDR
   volumes:
   - .:/go/src/github.com/golang/scristofari/golang-poll
   links:
-  - mongo
-mongo:
+  - golang-poll-mongo
+golang-poll-mongo:
   image: mongo:latest
