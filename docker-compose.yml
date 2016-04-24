@@ -4,7 +4,7 @@ golang-poll-app:
   ports:
   - "80:8080"
   environment: 
-  - APP_HOST="172.17.0.2" #GOLANG_POLL_MONGO_PORT_27017_TCP_ADDR
+  - APP_HOST=172.17.0.2 #GOLANG_POLL_MONGO_PORT_27017_TCP_ADDR
   volumes:
   - .:/go/src/github.com/golang/scristofari/golang-poll
   links:
