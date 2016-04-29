@@ -1,4 +1,4 @@
-// The api
+// Package api
 //
 // CRUD poll:
 // - question
