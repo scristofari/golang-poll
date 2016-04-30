@@ -21,7 +21,7 @@ type DefaultWriter struct {
 // Define WriteHeader Method which will be executed.
 func (w *DefaultWriter) WriteHeader(status int) {}
 
-// Define WriteHeader Method which will executed.
+// Define WriteHeader Method which will be executed.
 func (w *DefaultWriter) Write(bytes []byte) (int, error) {
 	return len(text), nil
 }
