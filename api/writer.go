@@ -1,6 +1,9 @@
 package api
 
-import "net/http"
+import (
+	"fmt"
+	"net/http"
+)
 
 // New ResponseWriter
 // Needs :
@@ -33,4 +36,9 @@ func (w *LogResponseWriter) Write(data []byte) (int, error) {
 func (w *LogResponseWriter) WriteHeader(statusCode int) {
 	w.status = statusCode
 	w.ResponseWriter.WriteHeader(statusCode)
+}
+
+// Get the size
+func (w *LogResponseWriter) String(r *http.Request) string {
+	return fmt.Sprintf("%s %s %s %d %d", r.Method, r.URL.String(), r.Proto, w.Status(), w.Size())
 }

@@ -1,7 +1,6 @@
 package api
 
 import (
-	"fmt"
 	"log"
 	"net/http"
 
@@ -17,7 +16,7 @@ func LogHandler(f http.HandlerFunc) http.HandlerFunc {
 		}
 		f(nw, r)
 
-		log.Println(fmt.Sprintf("%s %s %s %d %d", r.Method, r.URL.String(), r.Proto, nw.Status(), nw.Size()))
+		log.Println(nw.String(r))
 	}
 }
 
