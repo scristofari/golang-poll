@@ -57,6 +57,6 @@ func TestPostPoll(t *testing.T) {
 	assert.NotEmpty(poll.ID, "Poll not saved ?")
 	assert.NotEmpty(poll.CreatedAt, "Created")
 	assert.NotEmpty(poll.UpdatedAt, "Updated")
-	assert.Equal("test poll", poll.Name, "Name")
+	assert.Equal("Test Poll", poll.Name, "Name")
 	assert.Equal(2, len(poll.Answers), "answers")
 }
