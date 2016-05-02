@@ -1,6 +1,7 @@
 package api
 
 import (
+	"fmt"
 	"log"
 	"net/http"
 
@@ -14,9 +15,20 @@ func LogHandler(f http.HandlerFunc) http.HandlerFunc {
 		nw := &LogResponseWriter{
 			ResponseWriter: w,
 		}
-		f(nw, r)
 
+		f(nw, r)
 		log.Println(nw.String(r))
+	}
+}
+
+func RecoverHandler(f http.HandlerFunc) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		defer func() {
+			if r := recover(); r != nil {
+				log.Println(fmt.Sprintf("Recover from %w", r))
+			}
+		}()
+		f(w, r)
 	}
 }
 
@@ -47,5 +59,5 @@ func CorsHandler(f http.HandlerFunc) http.HandlerFunc {
 
 // Map all sub middlewares
 func MiddlewareHandler(f http.HandlerFunc) http.HandlerFunc {
-	return LogHandler(CorsHandler(DBHandler(f)))
+	return RecoverHandler(LogHandler(CorsHandler(DBHandler(f))))
 }
