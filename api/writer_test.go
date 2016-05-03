@@ -4,6 +4,7 @@ import (
 	"net/http"
 	"net/url"
 	"testing"
+	"time"
 
 	"github.com/stretchr/testify/assert"
 )
@@ -32,10 +33,7 @@ func TestLogResponseWriter(t *testing.T) {
 	writer := LogResponseWriter{ResponseWriter: w}
 	writer.WriteHeader(http.StatusOK)
 	writer.Write(text)
-
-	assert := assert.New(t)
-	assert.Equal(http.StatusOK, writer.Status(), "Get status code")
-	assert.Equal(len(text), writer.Size(), "Get size")
+	writer.start = time.Now()
 
 	r := &http.Request{
 		Proto:  "HTTP/1.1",
@@ -44,5 +42,7 @@ func TestLogResponseWriter(t *testing.T) {
 			Path: "/api/v1/polls",
 		},
 	}
-	assert.Equal("GET /api/v1/polls HTTP/1.1 200 4", writer.String(r), "Log access request/response")
+
+	assert := assert.New(t)
+	assert.Equal("GET /api/v1/polls HTTP/1.1 200 4 0.00ms", writer.String(r), "Log access request/response")
 }

@@ -21,6 +21,14 @@ func init() {
 	pollsURL = fmt.Sprintf("%s/api/v1/polls", server.URL)
 }
 
+func TestNotFound(t *testing.T) {
+	r, _ := http.NewRequest("GET", server.URL+"notfound", nil)
+	w := httptest.NewRecorder()
+	notFoundHandler(w, r)
+	assert := assert.New(t)
+	assert.Equal(http.StatusNotFound, w.Code, "Status must be 404")
+}
+
 func TestListPolls(t *testing.T) {
 	request, err := http.NewRequest("GET", pollsURL, nil)
 	res, err := http.DefaultClient.Do(request)

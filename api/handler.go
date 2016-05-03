@@ -16,6 +16,12 @@ var (
 	errNotFound = errors.New("Document 'Poll' not found !")
 )
 
+// Not found Handler. Log middleware.
+//
+func notFoundHandler(w http.ResponseWriter, r *http.Request) {
+	http.NotFound(w, r)
+}
+
 // Will permit to filter polls by :
 // - limit
 // - offset

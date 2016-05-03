@@ -12,20 +12,19 @@ import (
 //  Apache access_log format
 func LogHandler(f http.HandlerFunc) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		nw := &LogResponseWriter{
-			ResponseWriter: w,
-		}
-
+		nw := NewLogResponseWriter(w)
 		f(nw, r)
+
 		log.Println(nw.String(r))
 	}
 }
 
+// Recover from error => log
 func RecoverHandler(f http.HandlerFunc) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		defer func() {
 			if r := recover(); r != nil {
-				log.Println(fmt.Sprintf("Recover from %w", r))
+				log.Println(fmt.Sprintf("Recover from '%v'", r))
 			}
 		}()
 		f(w, r)
